@@ -1,14 +1,14 @@
 version: '2'
 services:
     db:
-        image: pastakhov/mysql:5.7
+        image: registry.docker-cn.com/pastakhov/mysql:5.7
         restart: always
         environment:
             - MYSQL_ROOT_HOST=%
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
 
     proxy:
-        image: pastakhov/varnish-mediawiki:1.0
+        image: registry.docker-cn.com/pastakhov/varnish-mediawiki:1.0
         restart: always
         depends_on:
             - web
@@ -23,9 +23,10 @@ services:
             - PROXY_RESTBASE_SUB=/{backend_hint}/v1
 
     web:
-        build: 
-            context: ./web
-            dockerfile: Dockerfile
+        image: daocloud.io/huangzhichong/mediawiki
+        # build:
+        #     context: ./web
+        #     dockerfile: Dockerfile
         restart: always
         depends_on:
             - db
@@ -62,18 +63,18 @@ services:
             - PHP_ERROR_REPORTING=E_ALL #Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
 
     memcached:
-        image: memcached
+        image: memcached:latest
         restart: always
 
     parsoid:
-        image: pastakhov/parsoid:0.7.1
+        image: registry.docker-cn.com/pastakhov/parsoid:0.7.1
         restart: always
         environment:
             - PARSOID_NUM_WORKERS=0
             - PARSOID_DOMAIN_web=http://web/w/api.php
 
     restbase:
-        image: pastakhov/restbase:0.16.9
+        image: registry.docker-cn.com/pastakhov/restbase:0.16.9
         restart: always
         environment:
             - RB_CONF_NUM_WORKERS=0
@@ -89,7 +90,7 @@ services:
         restart: always
 
     pdf:
-        image: msokk/electron-render-service
+        image: registry.docker-cn.com/msokk/electron-render-service
         restart: always
         environment:
             RENDERER_ACCESS_KEY: secret
