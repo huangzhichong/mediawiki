@@ -57,9 +57,6 @@ RUN set -x; \
         -b $MW_VERSION \
         https://gerrit.wikimedia.org/r/p/mediawiki/core.git \
         $MW_HOME \
-#    && cd $MW_HOME \
-#    && composer install --no-dev \
-#    && chown -R $WWW_USER:$WWW_GROUP images/
 
 ##### Bundled skins, see https://www.mediawiki.org/wiki/Bundled_extensions
 RUN set -x; \
@@ -93,10 +90,6 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/SyntaxHighlight_GeSHi \
-#    && cd SyntaxHighlight_GeSHi \
-#    && composer install --no-dev \
-#    && chmod a+x pygments/pygmentize \
-#    && cd ..
 
 ##### Commonly used extensions
 RUN set -x; \
@@ -109,9 +102,6 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/Flow \
-#    && cd Flow \
-#    && composer install --no-dev \
-#    && cd ..
 
 ### MediaWiki Language Extension Bundle
 # Translate
@@ -126,17 +116,14 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor \
-#    && cd VisualEditor \
-#    && git submodule update --init
+    && cd VisualEditor \
+    && git submodule update --init
 
 ##### ElasticSearch extensions
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/CirrusSearch \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/Elastica \
-#    && cd Elastica \
-#    && composer install --no-dev \
-#    && cd ..
 
 ##### MultimediaViewer extension
 RUN set -x; \
