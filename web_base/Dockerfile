@@ -56,7 +56,7 @@ RUN set -x; \
         --depth 1 \
         -b $MW_VERSION \
         https://gerrit.wikimedia.org/r/p/mediawiki/core.git \
-        $MW_HOME \
+        $MW_HOME
 
 ##### Bundled skins, see https://www.mediawiki.org/wiki/Bundled_extensions
 RUN set -x; \
