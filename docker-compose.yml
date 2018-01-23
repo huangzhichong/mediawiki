@@ -6,6 +6,8 @@ services:
         environment:
             - MYSQL_ROOT_HOST=%
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
+        ports:
+            - "3306:3306"
 
     proxy:
         image: registry.docker-cn.com/pastakhov/varnish-mediawiki:1.0
@@ -23,10 +25,10 @@ services:
             - PROXY_RESTBASE_SUB=/{backend_hint}/v1
 
     web:
-        image: daocloud.io/huangzhichong/mediawiki
-        # build:
-        #     context: ./web
-        #     dockerfile: Dockerfile
+        # image: daocloud.io/huangzhichong/mediawiki
+        build:
+            context: ./web
+            dockerfile: Dockerfile
         restart: always
         depends_on:
             - db

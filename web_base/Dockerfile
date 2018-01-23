@@ -56,7 +56,10 @@ RUN set -x; \
         --depth 1 \
         -b $MW_VERSION \
         https://gerrit.wikimedia.org/r/p/mediawiki/core.git \
-        $MW_HOME
+        $MW_HOME \
+    && cd $MW_HOME \
+    && composer install --no-dev \
+    && chown -R $WWW_USER:$WWW_GROUP images/
 
 ##### Bundled skins, see https://www.mediawiki.org/wiki/Bundled_extensions
 RUN set -x; \
@@ -90,6 +93,10 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/SyntaxHighlight_GeSHi \
+    && cd SyntaxHighlight_GeSHi \
+    && composer install --no-dev \
+    && chmod a+x pygments/pygmentize \
+    && cd ..
 
 ##### Commonly used extensions
 RUN set -x; \
@@ -102,6 +109,9 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/Flow \
+    && cd Flow \
+    && composer install --no-dev \
+    && cd ..
 
 ### MediaWiki Language Extension Bundle
 # Translate
@@ -124,6 +134,9 @@ RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/CirrusSearch \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/Elastica \
+    && cd Elastica \
+    && composer install --no-dev \
+    && cd ..
 
 ##### MultimediaViewer extension
 RUN set -x; \
@@ -139,3 +152,22 @@ RUN set -x; \
 RUN set -x; \
     cd $MW_HOME/extensions \
     && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/ElectronPdfService
+
+#### Run maintenance sripts
+# Increase value for run maintenance script before web service started
+ENV MW_AUTOUPDATE=true \
+    MW_MAINTENANCE_UPDATE=3 \
+    MW_MAINTENANCE_CIRRUSSEARCH_UPDATECONFIG=1 \
+    MW_MAINTENANCE_CIRRUSSEARCH_FORCEINDEX=1 \
+    MW_MAINTENANCE_ULS_INDEXER=1 \
+    MW_SCRIPT_CLDR_REBUILD=1 \
+    MW_SITE_NAME=My\ MediaWiki\ Site \
+    MW_SITE_LANG=en \
+    MW_DEFAULT_SKIN=vector \
+    MW_MAIN_CACHE_TYPE=CACHE_ACCEL \
+    MW_REST_DOMAIN=localhost \
+    MW_REST_RESTBASE_PROXY_PATH=/api/rest_ \
+    MW_REST_RESTBASE_PORT=7231 \
+    MW_SHOW_EXCEPTION_DETAILS=true \
+    PHP_LOG_ERRORS=On \
+    PHP_ERROR_REPORTING=E_ALL
